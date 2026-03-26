@@ -75,6 +75,7 @@ partial class Form1
         BtnSelectSource.AutoSize = true;
         BtnSelectSource.TextAlign = ContentAlignment.MiddleCenter;
         BtnSelectSource.TabIndex = 0;
+        BtnSelectSource.Click += SelectPicture;
 
         // TlpSource
         TlpSource.SuspendLayout();
@@ -216,6 +217,8 @@ partial class Form1
         MaximizeBox = false;
         MinimizeBox = false;
         Controls.Add(TlpMain);
+        FormClosing += ClosingCallback;
+        FormClosed += ClosedCallback;
 
         ResumeLayout(false);
     }
