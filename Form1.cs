@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -29,7 +30,7 @@ public partial class Form1 : Form
                 e.Cancel = true;
                 return;
             }
-            
+
             cts.Cancel();
         }
     }
@@ -47,10 +48,12 @@ public partial class Form1 : Form
             BtnSelectSource.Enabled = false;
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "*.png|PNG";
+                ofd.Filter = "PNG|*.png|ALL|*.*";
                 ofd.CheckFileExists = true;
                 ofd.CheckPathExists = true;
+                ofd.Multiselect = false;
                 ofd.Title = "選擇原始圖片";
+
                 if (ofd.ShowDialog() == DialogResult.Cancel)
                     return;
                 TbxSourcePath.Text = ofd.FileName;
@@ -66,7 +69,7 @@ public partial class Form1 : Form
                 PbxPreview.Image = Image.FromStream(ms);
                 PbxPreview.SizeMode = PictureBoxSizeMode.Zoom;
             }
-            // GbxConvert.Enabled = true;
+            GbxConvert.Enabled = true;
         }
         catch (Exception excp)
         {
@@ -77,5 +80,71 @@ public partial class Form1 : Form
         {
             BtnSelectSource.Enabled = true;
         }
+    }
+
+    private async void ExportIcoFile(object sender, EventArgs e)
+    {
+        try
+        {
+            BtnConvert.Enabled = false;
+
+            uint[] sizes = GetOutputSizes();
+            if (sizes.Length == 0)
+            {
+                MessageBox.Show("請選擇icon尺寸。", Text);
+                return;
+            }
+
+            string outputPath;
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.CheckPathExists = true;
+                ofd.CheckFileExists = false;
+                ofd.AddExtension = false;
+                ofd.DefaultExt = ".ico";
+                ofd.Multiselect = false;
+
+                if (ofd.ShowDialog() == DialogResult.Cancel)
+                    return;
+
+                outputPath = ofd.FileName;
+            }
+
+            using (MagickImageCollection collection = new MagickImageCollection())
+            {
+                foreach (uint size in sizes)
+                {
+                    var copy = image.Clone();
+                    copy.Resize(size, size);
+                    collection.Add(copy);
+                }
+
+                await collection.WriteAsync(outputPath, MagickFormat.Ico, cts.Token);
+            }
+        }
+        catch (Exception excp)
+        {
+            MessageBox.Show($"輸出ico檔時發生例外狀況。 ({excp.Message})\n{excp.StackTrace}", "輸出ico檔");
+        }
+        finally
+        {
+            BtnConvert.Enabled = true;
+        }
+    }
+
+    private uint[] GetOutputSizes()
+    {
+        List<uint> sizes = new List<uint>();
+        if (ChbPx16.Checked)
+            sizes.Add(16);
+        if (ChbPx32.Checked)
+            sizes.Add(32);
+        if (ChbPx48.Checked)
+            sizes.Add(48);
+        if (ChbPx64.Checked)
+            sizes.Add(64);
+        if (ChbPx128.Checked)
+            sizes.Add(128);
+        return sizes.ToArray();
     }
 }

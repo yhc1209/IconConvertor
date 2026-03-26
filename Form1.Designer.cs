@@ -159,6 +159,7 @@ partial class Form1
         BtnConvert.TextAlign = ContentAlignment.MiddleCenter;
         BtnConvert.Anchor = AnchorStyles.Right;
         BtnConvert.TabIndex = 6;
+        BtnConvert.Click += ExportIcoFile;
 
         // TlpConvert
         TlpConvert.SuspendLayout();
