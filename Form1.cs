@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace IconConvertor;
 
 public partial class Form1 : Form

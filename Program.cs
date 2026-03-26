@@ -1,3 +1,6 @@
+using System;
+using System.Windows.Forms;
+
 namespace IconConvertor;
 
 static class Program
