@@ -6,6 +6,15 @@
     <UseWindowsForms>true</UseWindowsForms>
     <!-- <Nullable>enable</Nullable> -->
     <!-- <ImplicitUsings>enable</ImplicitUsings> -->
+
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Product>Icon Convertor</Product>
+    <Description>把圖片轉換成ico檔的程式。</Description>
+    <Version>1.0.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
